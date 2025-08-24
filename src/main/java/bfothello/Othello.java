@@ -47,7 +47,7 @@ public class Othello {
        ArrayList<Tuple<Integer, Integer>> up = walkUp(x , y);
        ArrayList<Tuple<Integer, Integer>> down = walkDown(x , y);
        ArrayList<Tuple<Integer, Integer>> left = walkLeft(x , y);
-       ArrayList<Tuple<Integer, Integer>> right = walkLeft(x , y);
+       ArrayList<Tuple<Integer, Integer>> right = walkRight(x , y);
        ArrayList<Tuple<Integer, Integer>> upleft = walkUpLeft(x , y);
        ArrayList<Tuple<Integer, Integer>> upright = walkUpRight(x , y);
        ArrayList<Tuple<Integer, Integer>> downleft = walkDownLeft(x , y);
