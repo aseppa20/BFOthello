@@ -16,6 +16,14 @@ public class Board {
         this.board[4][3].setState(Tile.State.BLACK);
     }
 
+    public void updateTile(Integer x, Integer y, Tile.State state) {
+        this.board[x][y].setState(state);
+    }
+
+    public Tile getTile(Integer x, Integer y) {
+        return this.board[x][y];
+    }
+
     public String getBoardStateHash() {
         /* The entire board can be represented in 16 bytes, 2 bytes per row.
         *  00 represents an empty tile
