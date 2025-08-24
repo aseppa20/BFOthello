@@ -66,12 +66,15 @@ public class Othello {
        return merged;
     }
 
-    // FIXME: Is there a better way to check these?
+    // FIXME: Turn to recursive. Very hacky
     private ArrayList<Tuple<Integer, Integer>> walkUp(Integer x, Integer y) {
         ArrayList<Tuple<Integer, Integer>> ups = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             for (int i = y + 1; i < 8; i++) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
+                        ups.clear();
+                    }
                     return ups;
                 }
                 ups.add(new Tuple<>(x, i));
@@ -79,6 +82,9 @@ public class Othello {
         } else if  (turn == Tile.State.WHITE) {
             for (int i = y + 1; i < 8; i++) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
+                        ups.clear();
+                    }
                     return ups;
                 }
                 ups.add(new Tuple<>(x, i));
@@ -92,6 +98,9 @@ public class Othello {
         if (turn == Tile.State.BLACK) {
             for (int i = y - 1; i > 0; i--) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
+                        downs.clear();
+                    }
                     return downs;
                 }
                 downs.add(new Tuple<>(x, i));
@@ -99,6 +108,9 @@ public class Othello {
         } else if  (turn == Tile.State.WHITE) {
             for (int i = y - 1; i > 0; i--) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
+                        downs.clear();
+                    }
                     return downs;
                 }
                 downs.add(new Tuple<>(x, i));
@@ -111,6 +123,9 @@ public class Othello {
         if (turn == Tile.State.BLACK) {
             for (int i = x + 1; i < 8; i++) {
                 if (this.board.getTile(i, y).getState() == Tile.State.EMPTY || this.board.getTile(i, y).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(i, y).getState() == Tile.State.EMPTY) {
+                        lefts.clear();
+                    }
                     return lefts;
                 }
                 lefts.add(new Tuple<>(i, y));
@@ -118,6 +133,9 @@ public class Othello {
         } else if  (turn == Tile.State.WHITE) {
             for (int i = x + 1; i < 8; i++) {
                 if (this.board.getTile(i, y).getState() == Tile.State.EMPTY || this.board.getTile(i, y).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(i, y).getState() == Tile.State.EMPTY) {
+                        lefts.clear();
+                    }
                     return lefts;
                 }
                 lefts.add(new Tuple<>(i, y));
@@ -132,6 +150,9 @@ public class Othello {
         if (turn == Tile.State.BLACK) {
             for (int i = x - 1; i > 8; i--) {
                 if (this.board.getTile(i, y).getState() == Tile.State.EMPTY || this.board.getTile(i, y).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(i, y).getState() == Tile.State.EMPTY) {
+                        rights.clear();
+                    }
                     return rights;
                 }
                 rights.add(new Tuple<>(i, y));
@@ -139,6 +160,9 @@ public class Othello {
         } else if  (turn == Tile.State.WHITE) {
             for (int i = x - 1; i > 8; i--) {
                 if (this.board.getTile(i, y).getState() == Tile.State.EMPTY || this.board.getTile(i, y).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(i, y).getState() == Tile.State.EMPTY) {
+                        rights.clear();
+                    }
                     return rights;
                 }
                 rights.add(new Tuple<>(i, y));
@@ -153,7 +177,10 @@ public class Othello {
             int i = y - 1;
             int j = x - 1;
             while (i > 0 && j > 0) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        uplefts.clear();
+                    }
                     return uplefts;
                 }
                 uplefts.add(new Tuple<>(j, i));
@@ -164,7 +191,10 @@ public class Othello {
             int i = y - 1;
             int j = x - 1;
             while (i > 0 && j > 0) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        uplefts.clear();
+                    }
                     return uplefts;
                 }
                 uplefts.add(new Tuple<>(j, i));
@@ -181,7 +211,10 @@ public class Othello {
             int i = y - 1;
             int j = x + 1;
             while (i > 0 && j < 8) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        uprights.clear();
+                    }
                     return uprights;
                 }
                 uprights.add(new Tuple<>(j, i));
@@ -192,7 +225,10 @@ public class Othello {
             int i = y - 1;
             int j = x + 1;
             while (i > 0 && j < 8) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        uprights.clear();
+                    }
                     return uprights;
                 }
                 uprights.add(new Tuple<>(j, i));
@@ -204,15 +240,18 @@ public class Othello {
     }
 
     private ArrayList<Tuple<Integer, Integer>> walkDownLeft(Integer x, Integer y) {
-        ArrayList<Tuple<Integer, Integer>> uprights = new ArrayList<>();
+        ArrayList<Tuple<Integer, Integer>> downlefts = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             int i = y + 1;
             int j = x - 1;
             while (i < 8 && j > 0) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
-                    return uprights;
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        downlefts.clear();
+                    }
+                    return downlefts;
                 }
-                uprights.add(new Tuple<>(j, i));
+                downlefts.add(new Tuple<>(j, i));
                 j--;
                 i++;
             }
@@ -220,15 +259,18 @@ public class Othello {
             int i = y + 1;
             int j = x - 1;
             while (i < 8 && j > 0) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
-                    return uprights;
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        downlefts.clear();
+                    }
+                    return downlefts;
                 }
-                uprights.add(new Tuple<>(j, i));
+                downlefts.add(new Tuple<>(j, i));
                 j--;
                 i++;
             }
         }
-        return uprights;
+        return downlefts;
     }
     private ArrayList<Tuple<Integer, Integer>> walkDownRight(Integer x, Integer y) {
         ArrayList<Tuple<Integer, Integer>> downrights = new ArrayList<>();
@@ -236,9 +278,13 @@ public class Othello {
             int i = y + 1;
             int j = x + 1;
             while (i < 8 && j < 8) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        downrights.clear();
+                    }
                     return downrights;
                 }
+
                 downrights.add(new Tuple<>(j, i));
                 j++;
                 i++;
@@ -247,7 +293,10 @@ public class Othello {
             int i = y + 1;
             int j = x + 1;
             while (i < 8 && j < 8) {
-                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
+                if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
+                    if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
+                        downrights.clear();
+                    }
                     return downrights;
                 }
                 downrights.add(new Tuple<>(j, i));
