@@ -1,5 +1,7 @@
 package bfothello;
 
+import javafx.application.Application;
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -13,5 +15,8 @@ public class Main {
             System.out.println(e.getMessage());
         }
         System.out.println(othello.getBoard().getBoardStateHash());
+
+        Application.launch(GUIClient.class ,args);
+
     }
 }
