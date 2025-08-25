@@ -34,9 +34,15 @@ public class Othello {
         if (this.turn == Tile.State.BLACK) {
             if (checkIfLegalMoveExists(Tile.State.WHITE))
                 this.turn = Tile.State.WHITE;
+            if (!checkIfLegalMoveExists(Tile.State.BLACK))
+                // Game ends here, because no legal moves left
+                this.turn = Tile.State.EMPTY;
         } else {
             if (checkIfLegalMoveExists(Tile.State.BLACK))
                 this.turn = Tile.State.BLACK;
+            if (!checkIfLegalMoveExists(Tile.State.WHITE))
+                // Game ends here, because no legal moves left
+                this.turn = Tile.State.EMPTY;
         }
     }
 

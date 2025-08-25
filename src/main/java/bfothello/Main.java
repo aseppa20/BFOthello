@@ -15,6 +15,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
         System.out.println(othello.getBoard().getBoardStateHash());
+        System.out.println(othello.getBoard());
 
         //Application.launch(GUIClient.class ,args);
 

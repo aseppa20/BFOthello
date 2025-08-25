@@ -40,4 +40,24 @@ public class Board {
         return binaryHash.toString();
     }
 
+    @Override
+    public String toString() {
+        String hash = this.getBoardStateHash();
+        StringBuilder boardString = new StringBuilder();
+        int i = 0;
+        int j = 0;
+        for (char c : hash.toCharArray()) {
+            boardString.append(c);
+            i++;
+            if (i % 2 == 0) {
+                boardString.append(" ");
+            }
+            j++;
+            if (j % 16 == 0) {
+                boardString.append("\n");
+            }
+        }
+
+        return boardString.toString();
+    }
 }
