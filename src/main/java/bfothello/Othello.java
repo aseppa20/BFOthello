@@ -5,8 +5,6 @@ import java.util.ArrayList;
 public class Othello {
     private final Board board;
     private Tile.State turn;
-    private ArrayList<String> AllowedMovesWhite;
-    private ArrayList<String> AllowedMovesBlack;
 
     public Othello() {
     // As for Othello rules, black starts
@@ -18,40 +16,51 @@ public class Othello {
         return board;
     }
 
-    private void updateAllowedMoves() {
-        //No implementation yet
-    }
 
     public void makeMove(Integer x, Integer y) throws IllegalMoveException {
         if (board.getTile(x, y).getState() != Tile.State.EMPTY) {
             throw new IllegalMoveException("Cannot place object to of other one.");
         }
-        ArrayList<Tuple<Integer, Integer>> walks = doWalks(x, y);
+        ArrayList<Tuple<Integer, Integer>> walks = doWalks(x, y, this.turn);
         if (walks.isEmpty()) {
             throw new IllegalMoveException("That is not a legal move.");
         }
-        board.updateTile(x, y, turn);
+        board.updateTile(x, y, this.turn);
         for (Tuple<Integer, Integer> walk : walks) {
-            board.updateTile(walk.getA(), walk.getB(), turn);
+            board.updateTile(walk.getA(), walk.getB(), this.turn);
         }
 
-        // TODO: Need to check if any legal moves are available
-        if (turn == Tile.State.BLACK) {
-            turn = Tile.State.WHITE;
+        // Change turn, if a legal move is available
+        if (this.turn == Tile.State.BLACK) {
+            if (checkIfLegalMoveExists(Tile.State.WHITE))
+                this.turn = Tile.State.WHITE;
         } else {
-            turn = Tile.State.BLACK;
+            if (checkIfLegalMoveExists(Tile.State.BLACK))
+                this.turn = Tile.State.BLACK;
         }
     }
 
-    private ArrayList<Tuple<Integer, Integer>> doWalks(Integer x, Integer y) {
-       ArrayList<Tuple<Integer, Integer>> up = walkUp(x , y);
-       ArrayList<Tuple<Integer, Integer>> down = walkDown(x , y);
-       ArrayList<Tuple<Integer, Integer>> left = walkLeft(x , y);
-       ArrayList<Tuple<Integer, Integer>> right = walkRight(x , y);
-       ArrayList<Tuple<Integer, Integer>> upleft = walkUpLeft(x , y);
-       ArrayList<Tuple<Integer, Integer>> upright = walkUpRight(x , y);
-       ArrayList<Tuple<Integer, Integer>> downleft = walkDownLeft(x , y);
-       ArrayList<Tuple<Integer, Integer>> downright = walkDownRight(x , y);
+    private Boolean checkIfLegalMoveExists(Tile.State state) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board.getTile(i, j).getState() == Tile.State.EMPTY && !doWalks(i, j, state).isEmpty() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private ArrayList<Tuple<Integer, Integer>> doWalks(Integer x, Integer y, Tile.State turn) {
+       ArrayList<Tuple<Integer, Integer>> up = walkUp(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> down = walkDown(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> left = walkLeft(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> right = walkRight(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> upleft = walkUpLeft(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> upright = walkUpRight(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> downleft = walkDownLeft(x , y, turn);
+       ArrayList<Tuple<Integer, Integer>> downright = walkDownRight(x , y, turn);
 
        ArrayList<Tuple<Integer, Integer>> merged = new ArrayList<>();
        merged.addAll(up);
@@ -67,7 +76,8 @@ public class Othello {
     }
 
     // FIXME: Turn to recursive. Very hacky
-    private ArrayList<Tuple<Integer, Integer>> walkUp(Integer x, Integer y) {
+    // FIXME: Make this its own class
+    private ArrayList<Tuple<Integer, Integer>> walkUp(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> ups = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             for (int i = y + 1; i < 8; i++) {
@@ -93,7 +103,7 @@ public class Othello {
         return ups;
     }
 
-    private ArrayList<Tuple<Integer, Integer>> walkDown(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkDown(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> downs = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             for (int i = y - 1; i > 0; i--) {
@@ -118,7 +128,7 @@ public class Othello {
         }
         return downs;
     }
-    private ArrayList<Tuple<Integer, Integer>> walkLeft(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkLeft(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> lefts = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             for (int i = x + 1; i < 8; i++) {
@@ -145,7 +155,7 @@ public class Othello {
 
     }
 
-    private ArrayList<Tuple<Integer, Integer>> walkRight(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkRight(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> rights = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             for (int i = x - 1; i > 8; i--) {
@@ -171,7 +181,7 @@ public class Othello {
         return rights;
     }
 
-    private ArrayList<Tuple<Integer, Integer>> walkUpLeft(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkUpLeft(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> uplefts = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             int i = y - 1;
@@ -205,7 +215,7 @@ public class Othello {
         return uplefts;
     }
 
-    private ArrayList<Tuple<Integer, Integer>> walkUpRight(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkUpRight(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> uprights = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             int i = y - 1;
@@ -239,7 +249,7 @@ public class Othello {
         return uprights;
     }
 
-    private ArrayList<Tuple<Integer, Integer>> walkDownLeft(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkDownLeft(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> downlefts = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             int i = y + 1;
@@ -272,7 +282,7 @@ public class Othello {
         }
         return downlefts;
     }
-    private ArrayList<Tuple<Integer, Integer>> walkDownRight(Integer x, Integer y) {
+    private ArrayList<Tuple<Integer, Integer>> walkDownRight(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> downrights = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
             int i = y + 1;

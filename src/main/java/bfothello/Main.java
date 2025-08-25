@@ -16,7 +16,7 @@ public class Main {
         }
         System.out.println(othello.getBoard().getBoardStateHash());
 
-        Application.launch(GUIClient.class ,args);
+        //Application.launch(GUIClient.class ,args);
 
     }
 }
