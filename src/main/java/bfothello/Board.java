@@ -1,5 +1,7 @@
 package bfothello;
 
+import java.util.InputMismatchException;
+
 public class Board {
     private final Tile[][] board = new Tile[8][8];
 
@@ -38,6 +40,29 @@ public class Board {
             }
         }
         return binaryHash.toString();
+    }
+
+    public void constructBoardFromStateHash(String stateHash) throws BadHashException {
+        if (stateHash == null || stateHash.length() != 128) {
+            throw new BadHashException("Hash was not 128 bits long.");
+        }
+        int k = 0;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                String tile = stateHash.substring(k, k + 2);
+                if(tile.equals("00")) {
+                    this.board[i][j].setState(Tile.State.EMPTY);
+                } else if (tile.equals("01")) {
+                    this.board[i][j].setState(Tile.State.WHITE);
+                } else if (tile.equals("10")) {
+                    this.board[i][j].setState(Tile.State.BLACK);
+                } else {
+                    throw new BadHashException("Invalid tile hash.");
+                }
+                k = k + 2;
+            }
+        }
+
     }
 
     @Override
