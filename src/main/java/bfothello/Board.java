@@ -50,14 +50,11 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 String tile = stateHash.substring(k, k + 2);
-                if(tile.equals("00")) {
-                    this.board[i][j].setState(Tile.State.EMPTY);
-                } else if (tile.equals("01")) {
-                    this.board[i][j].setState(Tile.State.WHITE);
-                } else if (tile.equals("10")) {
-                    this.board[i][j].setState(Tile.State.BLACK);
-                } else {
-                    throw new BadHashException("Invalid tile hash.");
+                switch (tile) {
+                    case "00" -> this.board[i][j].setState(Tile.State.EMPTY);
+                    case "01" -> this.board[i][j].setState(Tile.State.WHITE);
+                    case "10" -> this.board[i][j].setState(Tile.State.BLACK);
+                    default -> throw new BadHashException("Invalid tile hash.");
                 }
                 k = k + 2;
             }
