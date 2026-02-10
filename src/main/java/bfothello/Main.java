@@ -7,14 +7,15 @@ import javafx.application.Application;
 public class Main {
     public static void main(String[] args) {
         Othello othello = new Othello();
-        System.out.println(othello.getBoard().getBoardStateHash());
+        System.out.println(othello.getBoard());
         try {
             othello.makeMove(3, 2);
+            System.out.println(othello.getBoard());
             othello.makeMove(2, 2);
         }  catch (IllegalMoveException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(othello.getBoard().getBoardStateHash());
+
         System.out.println(othello.getBoard());
 
         //Application.launch(GUIClient.class ,args);
