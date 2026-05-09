@@ -3,7 +3,7 @@ package bfothello;
 public class Tile {
     // A tile on the board
     public enum State {
-        EMPTY,BLACK, WHITE;
+        EMPTY,BLACK,WHITE;
     }
 
     private State state;

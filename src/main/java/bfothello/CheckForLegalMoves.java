@@ -7,11 +7,11 @@ public class CheckForLegalMoves {
 
     public CheckForLegalMoves() {}
 
-    public Boolean checkIfLegalMoveExists(Tile.State state, Board board) {
+    public Boolean checkIfLegalMoveExists(Tile.State turn, Board board) {
         this.board = board;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                if (board.getTile(i, j).getState() == Tile.State.EMPTY && !doWalks(i, j, state).isEmpty() ) {
+                if (board.getTile(i, j).getState() == Tile.State.EMPTY && !doWalks(i, j, turn).isEmpty() ) {
                     return true;
                 }
             }

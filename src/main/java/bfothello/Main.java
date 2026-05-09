@@ -46,20 +46,21 @@ public class Main {
                 try (Socket socket = serverSocket.accept()) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String line = in.readLine();
+                    System.out.println(line);
                     if (line.equals("Hello")) {
-                        socket.getOutputStream().write("Game Full".getBytes());
+                        socket.getOutputStream().write(("Error" + delimiter + "Game Full").getBytes());
                     }
                     else if (line.equals("State")) {
-                        String state = othello.getBoard() + delimiter + othello.getTurn();
+                        String state = othello.getBoard().getBoardStateHash() + delimiter + othello.getTurn();
                         socket.getOutputStream().write(state.getBytes());
 
                     } else if (line.contains("Move")) {
                         if (line.contains("Black") && line.contains("White"))
-                            socket.getOutputStream().write("No Multiroles".getBytes());
+                            socket.getOutputStream().write(("Error" + delimiter + "No Multi Role").getBytes());
 
                         else if (line.contains("Black") && othello.getTurn() == Tile.State.WHITE ||
                                  line.contains("White") && othello.getTurn() == Tile.State.BLACK)
-                            socket.getOutputStream().write("Not Your Turn".getBytes());
+                            socket.getOutputStream().write(("Error" + delimiter + "Not Your Turn").getBytes());
 
                         else if (line.contains("Black") && othello.getTurn() == Tile.State.BLACK ||
                                 line.contains("White") && othello.getTurn() == Tile.State.WHITE) {
@@ -67,12 +68,18 @@ public class Main {
                             String[] splitted = line.split(delimiter);
                             try {
                                 othello.makeMove(splitted[2], splitted[3]);
+                                socket.getOutputStream().write("OK".getBytes());
+                                System.out.println(othello.getBoard().getBoardStateHash());
                             } catch (IllegalMoveException e) {
-                                socket.getOutputStream().write("Illegal Move".getBytes());
+                                socket.getOutputStream().write(("Error" + delimiter + "Illegal Move").getBytes());
                             }
                         }
-                    }
 
+                    }
+                    else
+                        socket.getOutputStream().write("Error".getBytes());
+
+                    socket.getOutputStream().flush();
                 }
 
             }
