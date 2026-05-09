@@ -15,6 +15,8 @@ public class Runbot implements Runnable {
                     role = receive.readLine();
                     System.out.println(role);
                 }
+
+
                 socket.close();
         } catch (IOException e) {
             e.printStackTrace();

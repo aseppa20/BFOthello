@@ -28,6 +28,8 @@ public class Othello {
         return scoreBlack;
     }
 
+    public Tile.State getTurn() {return turn;}
+
     private void increment_score() {
         // Increments black or white score. Does not do any decrements.
         if (this.turn == Tile.State.BLACK) {
@@ -97,6 +99,10 @@ public class Othello {
                 // Game ends here, because no legal moves left
                 this.turn = Tile.State.EMPTY;
         }
+    }
+
+    public void makeMove(String x, String y) throws IllegalMoveException {
+        makeMove(Integer.parseInt(x), Integer.parseInt(y));
     }
 
 }
