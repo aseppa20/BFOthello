@@ -94,15 +94,23 @@ public class Othello {
         if (this.turn == Tile.State.BLACK) {
             if (legalMoves.checkIfLegalMoveExists(Tile.State.WHITE, board))
                 this.turn = Tile.State.WHITE;
-            if (!legalMoves.checkIfLegalMoveExists(Tile.State.BLACK, board))
+            else if (!legalMoves.checkIfLegalMoveExists(Tile.State.BLACK, board)){
                 // Game ends here, because no legal moves left
+                count_score();
+                System.out.println(("Game over. Score:\n Black: " + this.scoreBlack + "\n White: " + this.scoreWhite + "."));
+                System.out.println(board);
                 this.turn = Tile.State.EMPTY;
+            }
         } else {
             if (legalMoves.checkIfLegalMoveExists(Tile.State.BLACK, board))
                 this.turn = Tile.State.BLACK;
-            if (!legalMoves.checkIfLegalMoveExists(Tile.State.WHITE, board))
+            else if (!legalMoves.checkIfLegalMoveExists(Tile.State.WHITE, board)) {
                 // Game ends here, because no legal moves left
+                count_score();
+                System.out.println(("Game over. Score:\n Black: " + this.scoreBlack + "\n White: " + this.scoreWhite + "."));
+                System.out.println(board);
                 this.turn = Tile.State.EMPTY;
+            }
         }
     }
 

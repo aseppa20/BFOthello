@@ -14,12 +14,12 @@ public class Runbot implements Runnable {
         Board board = new Board();
         try {
             board.constructBoardFromStateHash(hash);
-            ArrayList<Tuple<Integer, Integer>> legalMoves = new ArrayList<>();
             CheckForLegalMoves c = new CheckForLegalMoves();
             for (Integer x = 0; x < 8; x++) {
                 for (Integer y = 0; y < 8; y++) {
-                    if (! c.doWalks(x, y, rolenum, board).isEmpty())
-                        return new Tuple<>(x, y);
+                    if (board.getTile(x, y).getState() != Tile.State.EMPTY || c.doWalks(x, y, rolenum, board).isEmpty())
+                        continue;
+                    return new Tuple<>(x, y);
                 }
             }
         } catch (BadHashException e) {
@@ -67,18 +67,28 @@ public class Runbot implements Runnable {
 
                 boolean game = true;
                 while(game) {
+                    Thread.sleep(100);
                     send.writeUTF("State");
                     Thread.sleep(100);
                     String state = receive.readUTF();
+                    if (state.contains("Game over")) {
+                        break;
+                    }
+
+                    if (state.contains("Error")) {
+                        Thread.sleep(500);
+                        continue;
+                    }
                     System.out.println(state);
                     String[] splitstate = state.split(delimiter);
                     if (splitstate.length <= 1) {
-                        Thread.sleep(500);
                         continue;
                     }
                     if (splitstate[1].equals(rolenum.toString())) {
                         Tuple<Integer, Integer> newMove = findFirstLegalMove(splitstate[0]);
                         send.writeUTF(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
+                        Thread.sleep(100);
+                        state = receive.readUTF();
                     } else if (splitstate[1].equals("0")) {
                         game = false;
                     }
