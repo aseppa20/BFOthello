@@ -37,11 +37,11 @@ class ClientConnection implements Runnable {
                     if (line.equals("Hello")) {
                         // Here is a race condition. Commit for research purposes!
                         if (!othello.isTherePlayerBlack()) {
-                            output.writeUTF("Black");
                             othello.setPlayerBlack(true);
+                            output.writeUTF("Black");
                         } else if (!othello.isTherePlayerWhite()) {
-                            output.writeUTF("White");
                             othello.setPlayerWhite(true);
+                            output.writeUTF("White");
                         }
                     } else {
                         output.writeUTF("Wait");
