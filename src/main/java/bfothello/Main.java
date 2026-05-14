@@ -1,87 +1,144 @@
 package bfothello;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 import javafx.application.Application;
 // Setup application and works as the server
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-    String delimiter = ";";
+class ClientConnection implements Runnable {
+    private Socket socket;
+    private DataInputStream input;
+    private DataOutputStream output;
+    private Othello othello;
+    private String delimiter;
 
-        try (ServerSocket serverSocket = new ServerSocket(65500)) {
-            Othello othello = new Othello();
-            System.out.println(othello.getBoard());
+    public ClientConnection(Socket socket, Othello othello, String delimiter) throws IOException {
+        this.socket = socket;
+        this.othello = othello;
+        this.input = new DataInputStream(socket.getInputStream());
+        this.output = new DataOutputStream(socket.getOutputStream());
+        this.delimiter = delimiter;
+    }
 
-            // Spawn bots
-            Thread t1 = Thread.ofPlatform().start(new bfothello.bots.Runbot(){});
-            Thread t2 = Thread.ofPlatform().start(new bfothello.bots.Runbot(){});
+    @Override
+    public void run() {
+        for(;;) {
+        try {
+                String line = input.readUTF();
+                if (line.isEmpty())
+                    continue;
+                System.out.println(line);
 
-            boolean playerblack = false;
-            boolean playerwhite = false;
+                if (!othello.isTherePlayerBlack() || !othello.isTherePlayerWhite()) {
 
-            while (!playerblack || !playerwhite) {
-                //give bot black or white
-                try (Socket socket = serverSocket.accept()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    if (in.readLine().equals("Hello")) {
-                        if (!playerblack) {
-                            socket.getOutputStream().write("Black".getBytes());
-                            playerblack = true;
-                            System.out.println("Black given");
-                        } else {
-                            socket.getOutputStream().write("White".getBytes());
-                            playerwhite = true;
-                            System.out.println("White given");
+                    // Game not started. Assign player roles.
+                    if (line.equals("Hello")) {
+                        // Here is a race condition. Commit for research purposes!
+                        if (!othello.isTherePlayerBlack()) {
+                            output.writeUTF("Black");
+                            othello.setPlayerBlack(true);
+                        } else if (!othello.isTherePlayerWhite()) {
+                            output.writeUTF("White");
+                            othello.setPlayerWhite(true);
                         }
                     } else {
-                        socket.getOutputStream().write("Wait".getBytes());
+                        output.writeUTF("Wait");
                     }
-                    socket.getOutputStream().flush();
-                }
-            }
+                // Game is ON!
+                } else if (othello.getTurn() != Tile.State.EMPTY) {
+                    if (line.equals("Hello"))
+                        output.writeUTF(("Error" + delimiter + "Game Full"));
 
-            while(othello.getTurn() != Tile.State.EMPTY) {
-                try (Socket socket = serverSocket.accept()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String line = in.readLine();
-                    System.out.println(line);
-                    if (line.equals("Hello")) {
-                        socket.getOutputStream().write(("Error" + delimiter + "Game Full").getBytes());
-                    }
-                    else if (line.equals("State")) {
-                        String state = othello.getBoard().getBoardStateHash() + delimiter + othello.getTurn();
-                        socket.getOutputStream().write(state.getBytes());
+                    else if (line.equals("State"))
+                        output.writeUTF((othello.getBoard().getBoardStateHash() + delimiter + othello.getTurn()));
 
-                    } else if (line.contains("Move")) {
+                    else if (line.contains("Move")) {
                         if (line.contains("Black") && line.contains("White"))
-                            socket.getOutputStream().write(("Error" + delimiter + "No Multi Role").getBytes());
-
+                            output.writeUTF(("Error" + delimiter + "No Multi Role"));
                         else if (line.contains("Black") && othello.getTurn() == Tile.State.WHITE ||
-                                 line.contains("White") && othello.getTurn() == Tile.State.BLACK)
-                            socket.getOutputStream().write(("Error" + delimiter + "Not Your Turn").getBytes());
-
+                                line.contains("White") && othello.getTurn() == Tile.State.BLACK)
+                            output.writeUTF(("Error" + delimiter + "Not Your Turn"));
                         else if (line.contains("Black") && othello.getTurn() == Tile.State.BLACK ||
                                 line.contains("White") && othello.getTurn() == Tile.State.WHITE) {
                             // Move;Turn;X;Y
                             String[] splitted = line.split(delimiter);
                             try {
                                 othello.makeMove(splitted[2], splitted[3]);
-                                socket.getOutputStream().write("OK".getBytes());
+                                output.writeUTF("OK");
                                 System.out.println(othello.getBoard().getBoardStateHash());
                             } catch (IllegalMoveException e) {
-                                socket.getOutputStream().write(("Error" + delimiter + "Illegal Move").getBytes());
+                                output.writeUTF(("Error" + delimiter + "Illegal Move"));
                             }
                         }
-
                     }
-                    else
-                        socket.getOutputStream().write("Error".getBytes());
 
-                    socket.getOutputStream().flush();
+                    else {
+                        output.writeUTF("Error");
+                    }
                 }
 
+                else {
+                    output.writeUTF("Game over, bye!");
+                    socket.close();
+                    break;
+                }
+
+            } catch (IOException e) {
+            e.printStackTrace();
+            }
+        }
+    }
+}
+
+class OthelloServerThread extends Thread {
+    private Socket socket = null;
+    private Othello othello;
+    private String delimiter;
+
+    public OthelloServerThread(Socket socket, Othello othello, String delimiter) {
+        super("OthelloServerThread");
+        this.socket = socket;
+        this.othello = othello;
+        this.delimiter = delimiter;
+    }
+
+    public void run() {
+        //Game has not been started. Try offer roles so game starts
+        if (!othello.isTherePlayerBlack() || !othello.isTherePlayerWhite()) {
+            Runnable client = null;
+            try {
+                client = new ClientConnection(socket, othello, delimiter);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            new Thread(client).start();
+            System.out.println("Connection got!");
+
+        } else {
+            try {
+                socket.getOutputStream().write(("Error" + delimiter + "Game Full").getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        String delimiter = ";";
+        Othello othello = new Othello();
+        // Spawn bots, currently done in this body for testing purposes.
+        // TODO: Decouple
+        Thread.ofPlatform().start(new bfothello.bots.Runbot(){});
+        Thread.ofPlatform().start(new bfothello.bots.Runbot(){});
+
+        try (ServerSocket serverSocket = new ServerSocket(65500)) {
+            while (othello.getTurn() != Tile.State.EMPTY) {
+                new OthelloServerThread(serverSocket.accept(), othello, delimiter).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

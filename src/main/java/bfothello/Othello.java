@@ -7,6 +7,9 @@ public class Othello {
     private Tile.State turn;
     private Integer scoreWhite;
     private Integer scoreBlack;
+    // Know if the game has players
+    private boolean playerBlack;
+    private boolean playerWhite;
 
     public Othello() {
     // As for Othello rules, black starts. Sets score to 2 for both, since there are 2 pieces on the board.
@@ -14,6 +17,8 @@ public class Othello {
         this.turn = Tile.State.BLACK;
         this.scoreWhite = 2;
         this.scoreBlack = 2;
+        playerBlack = false;
+        playerWhite = false;
     }
 
     public Board getBoard() {
@@ -103,6 +108,22 @@ public class Othello {
 
     public void makeMove(String x, String y) throws IllegalMoveException {
         makeMove(Integer.parseInt(x), Integer.parseInt(y));
+    }
+
+    public boolean isTherePlayerWhite() {
+        return playerWhite;
+    }
+
+    public void setPlayerWhite(boolean playerWhite) {
+        this.playerWhite = playerWhite;
+    }
+
+    public boolean isTherePlayerBlack() {
+        return playerBlack;
+    }
+
+    public void setPlayerBlack(boolean playerBlack) {
+        this.playerBlack = playerBlack;
     }
 
 }

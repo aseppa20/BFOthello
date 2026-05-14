@@ -31,41 +31,60 @@ public class Runbot implements Runnable {
     @Override
     public void run() {
         System.out.println("Hello! Runbot here!");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         try (Socket socket = new Socket("localhost", 65500);
-             PrintWriter send = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader receive = new BufferedReader(new InputStreamReader(socket.getInputStream()));) {
-                while (role.isEmpty()) {
-                    send.println("Hello");
-                    role = receive.readLine();
-                    System.out.println(role);
-                    if (role.equals("Black"))
+             DataOutputStream send = new DataOutputStream(socket.getOutputStream());
+             DataInputStream receive = new DataInputStream(socket.getInputStream());)
+        {
+            System.out.println("Hello! Bot here!");
+
+            while (role.isBlank()) {
+                try {
+                    send.writeUTF("Hello");
+                    Thread.sleep(200);
+                    role = receive.readUTF();
+                    if (role.equals("Black")) {
                         rolenum = Tile.State.BLACK;
-                    if (role.equals("White"))
+                        System.out.println("Got role Black");
+                    }
+                    if (role.equals("White")) {
                         rolenum = Tile.State.WHITE;
+                        System.out.println("Got role White");
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    continue;
                 }
-                Thread.sleep(100);
+            }
+            Thread.sleep(1000);
 
                 boolean game = true;
                 while(game) {
-                    send.println("State");
-                    String state =  receive.readLine();
-                    if (state == null)
-                        continue;
+                    send.writeUTF("State");
+                    Thread.sleep(100);
+                    String state = receive.readUTF();
+                    System.out.println(state);
                     String[] splitstate = state.split(delimiter);
+                    if (splitstate.length <= 1) {
+                        Thread.sleep(500);
+                        continue;
+                    }
                     if (splitstate[1].equals(rolenum.toString())) {
                         Tuple<Integer, Integer> newMove = findFirstLegalMove(splitstate[0]);
-                        send.println(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
+                        send.writeUTF(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
                     } else if (splitstate[1].equals("0")) {
                         game = false;
                     }
-                    receive.readLine();
 
-                Thread.sleep(100);
                 }
 
-
-                socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
