@@ -49,7 +49,6 @@ public class CheckForLegalMoves {
     }
 
     // FIXME: Turn to recursive. Very hacky
-    // FIXME: Make this its own class
     private ArrayList<Tuple<Integer, Integer>> walkUp(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> ups = new ArrayList<>();
         if (turn == Tile.State.BLACK) {

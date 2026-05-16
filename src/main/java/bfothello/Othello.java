@@ -74,7 +74,7 @@ public class Othello {
 
     public void makeMove(Integer x, Integer y) throws IllegalMoveException {
         if (board.getTile(x, y).getState() != Tile.State.EMPTY) {
-            throw new IllegalMoveException("Cannot place object to of other one.");
+            throw new IllegalMoveException("Already has a tile.");
         }
 
         CheckForLegalMoves legalMoves = new CheckForLegalMoves();

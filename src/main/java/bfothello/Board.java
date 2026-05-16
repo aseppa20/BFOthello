@@ -14,6 +14,7 @@ public class Board {
 
         this.board[3][3].setState(Tile.State.WHITE);
         this.board[4][4].setState(Tile.State.WHITE);
+
         this.board[3][4].setState(Tile.State.BLACK);
         this.board[4][3].setState(Tile.State.BLACK);
     }

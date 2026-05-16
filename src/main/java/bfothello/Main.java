@@ -4,9 +4,7 @@ import java.net.*;
 import java.util.ArrayList;
 
 import javafx.application.Application;
-// Setup application and works as the server
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 class ClientConnection implements Runnable {
     private Socket socket;
     private DataInputStream input;
