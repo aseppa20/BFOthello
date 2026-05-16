@@ -72,6 +72,7 @@ public class CheckForLegalMoves {
                 ups.add(new Tuple<>(x, i));
             }
         }
+        ups.clear();
         return ups;
     }
 
@@ -98,6 +99,7 @@ public class CheckForLegalMoves {
                 downs.add(new Tuple<>(x, i));
             }
         }
+        downs.clear();
         return downs;
     }
     private ArrayList<Tuple<Integer, Integer>> walkLeft(Integer x, Integer y, Tile.State turn) {
@@ -123,6 +125,7 @@ public class CheckForLegalMoves {
                 lefts.add(new Tuple<>(i, y));
             }
         }
+        lefts.clear();
         return lefts;
 
     }
@@ -150,6 +153,7 @@ public class CheckForLegalMoves {
                 rights.add(new Tuple<>(i, y));
             }
         }
+        rights.clear();
         return rights;
     }
 
@@ -184,6 +188,7 @@ public class CheckForLegalMoves {
                 i--;
             }
         }
+        uplefts.clear();
         return uplefts;
     }
 
@@ -218,6 +223,7 @@ public class CheckForLegalMoves {
                 i--;
             }
         }
+        uprights.clear();
         return uprights;
     }
 
@@ -252,6 +258,7 @@ public class CheckForLegalMoves {
                 i++;
             }
         }
+        downlefts.clear();
         return downlefts;
     }
     private ArrayList<Tuple<Integer, Integer>> walkDownRight(Integer x, Integer y, Tile.State turn) {
@@ -286,6 +293,7 @@ public class CheckForLegalMoves {
                 i++;
             }
         }
+        downrights.clear();
         return downrights;
     }
 
