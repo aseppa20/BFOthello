@@ -79,7 +79,7 @@ public class CheckForLegalMoves {
     private ArrayList<Tuple<Integer, Integer>> walkDown(Integer x, Integer y, Tile.State turn) {
         ArrayList<Tuple<Integer, Integer>> downs = new ArrayList<>();
         if (turn == Tile.State.BLACK) {
-            for (int i = y - 1; i > 0; i--) {
+            for (int i = y - 1; i >= 0; i--) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.BLACK) {
                     if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
                         downs.clear();
@@ -89,7 +89,7 @@ public class CheckForLegalMoves {
                 downs.add(new Tuple<>(x, i));
             }
         } else if  (turn == Tile.State.WHITE) {
-            for (int i = y - 1; i > 0; i--) {
+            for (int i = y - 1; i >= 0; i--) {
                 if (this.board.getTile(x, i).getState() == Tile.State.EMPTY || this.board.getTile(x, i).getState() == Tile.State.WHITE) {
                     if (this.board.getTile(x, i).getState() == Tile.State.EMPTY) {
                         downs.clear();
@@ -162,7 +162,7 @@ public class CheckForLegalMoves {
         if (turn == Tile.State.BLACK) {
             int i = y - 1;
             int j = x - 1;
-            while (i > 0 && j > 0) {
+            while (i >= 0 && j >= 0) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         uplefts.clear();
@@ -176,7 +176,7 @@ public class CheckForLegalMoves {
         } else if  (turn == Tile.State.WHITE) {
             int i = y - 1;
             int j = x - 1;
-            while (i > 0 && j > 0) {
+            while (i >= 0 && j >= 0) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         uplefts.clear();
@@ -197,7 +197,7 @@ public class CheckForLegalMoves {
         if (turn == Tile.State.BLACK) {
             int i = y - 1;
             int j = x + 1;
-            while (i > 0 && j < 8) {
+            while (i >= 0 && j < 8) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         uprights.clear();
@@ -211,7 +211,7 @@ public class CheckForLegalMoves {
         } else if  (turn == Tile.State.WHITE) {
             int i = y - 1;
             int j = x + 1;
-            while (i > 0 && j < 8) {
+            while (i >= 0 && j < 8) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         uprights.clear();
@@ -232,7 +232,7 @@ public class CheckForLegalMoves {
         if (turn == Tile.State.BLACK) {
             int i = y + 1;
             int j = x - 1;
-            while (i < 8 && j > 0) {
+            while (i < 8 && j >= 0) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.BLACK) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         downlefts.clear();
@@ -246,7 +246,7 @@ public class CheckForLegalMoves {
         } else if  (turn == Tile.State.WHITE) {
             int i = y + 1;
             int j = x - 1;
-            while (i < 8 && j > 0) {
+            while (i < 8 && j >= 0) {
                 if (this.board.getTile(j, i).getState() == Tile.State.EMPTY || this.board.getTile(j, i).getState() == Tile.State.WHITE) {
                     if (this.board.getTile(j, i).getState() == Tile.State.EMPTY) {
                         downlefts.clear();
