@@ -4,7 +4,7 @@ import java.net.*;
 
 public class GameServer extends Thread {
     private Socket socket = null;
-    private Othello othello;
+    private final Othello othello;
     private final String delimiter;
 
     public GameServer(Socket socket, Othello othello, String delimiter) {
@@ -17,9 +17,20 @@ public class GameServer extends Thread {
 
     public void run() {
         if (!othello.isTherePlayerBlack() || !othello.isTherePlayerWhite()) {
+            Tile.State role = Tile.State.EMPTY;
+
+            if (!othello.isTherePlayerBlack()) {
+                role = Tile.State.BLACK;
+                othello.setPlayerBlack(true);
+            }
+            else if (!othello.isTherePlayerWhite()) {
+                role = Tile.State.WHITE;
+                othello.setPlayerWhite(true);
+            }
+
             Runnable client = null;
             try {
-                client = new ClientConnection(socket, othello, delimiter);
+                client = new ClientConnection(socket, othello, delimiter, role);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

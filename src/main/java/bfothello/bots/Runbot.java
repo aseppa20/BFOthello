@@ -1,7 +1,6 @@
 package bfothello.bots;
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
 
 import bfothello.*;
 
@@ -39,14 +38,13 @@ public class Runbot implements Runnable {
 
         try (Socket socket = new Socket("localhost", 65500);
              DataOutputStream send = new DataOutputStream(socket.getOutputStream());
-             DataInputStream receive = new DataInputStream(socket.getInputStream());)
+             DataInputStream receive = new DataInputStream(socket.getInputStream()))
         {
             System.out.println("Hello! Bot here!");
 
             while (role.isBlank()) {
                 try {
                     send.writeUTF("Hello");
-                    Thread.sleep(200);
                     role = receive.readUTF();
                     if (role.equals("Black")) {
                         rolenum = Tile.State.BLACK;
@@ -57,43 +55,49 @@ public class Runbot implements Runnable {
                         System.out.println("Got role White");
                     }
 
+                    if (role.contains("Game full"))
+                        System.exit(0);
+
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (InterruptedException e) {
-                    continue;
                 }
             }
             Thread.sleep(1000);
 
-                boolean game = true;
-                while(game) {
-                    Thread.sleep(100);
-                    send.writeUTF("State");
-                    Thread.sleep(100);
-                    String state = receive.readUTF();
-                    if (state.contains("Game over")) {
-                        break;
-                    }
+            boolean game = true;
+            while(game) {
+                String state = receive.readUTF();
+                System.out.println(state);
 
-                    if (state.contains("Error")) {
-                        Thread.sleep(500);
-                        continue;
-                    }
-                    System.out.println(state);
-                    String[] splitstate = state.split(delimiter);
-                    if (splitstate.length <= 1) {
-                        continue;
-                    }
-                    if (splitstate[1].equals(rolenum.toString())) {
-                        Tuple<Integer, Integer> newMove = findFirstLegalMove(splitstate[0]);
-                        send.writeUTF(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
-                        Thread.sleep(100);
-                        state = receive.readUTF();
-                    } else if (splitstate[1].equals("0")) {
-                        game = false;
-                    }
-
+                if (state.equals("OK")) {
+                    continue;
                 }
+
+                if (state.contains("Game over")) {
+                    break;
+                }
+
+                if (state.contains("Error")) {
+                    if (state.contains("Game full")) {
+                        System.exit(0);
+                    }
+                    continue;
+                }
+
+                String[] splitstate = state.split(delimiter);
+
+                if (splitstate.length <= 1) {
+                    continue;
+                }
+
+                if (splitstate[1].equals(rolenum.toString())) {
+                    Tuple<Integer, Integer> newMove = findFirstLegalMove(splitstate[0]);
+                    send.writeUTF(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
+                } else if (splitstate[1].equals("0")) {
+                    game = false;
+                }
+
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
