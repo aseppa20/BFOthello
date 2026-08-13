@@ -104,7 +104,9 @@ class ClientConnection implements Runnable {
                             output.writeUTF("OK");
                             System.out.println(othello.getBoard().getBoardStateHash());
                         } catch (IllegalMoveException e) {
+                            System.out.println(line);
                             output.writeUTF(("Error" + delimiter + "Illegal Move"));
+                            firstLoop = true;
                         }
                     }
                 }

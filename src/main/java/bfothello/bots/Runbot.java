@@ -9,7 +9,11 @@ public class Runbot implements Runnable {
     String delimiter = ";";
     String role = "";
     Tile.State rolenum = Tile.State.EMPTY;
-    Strategy strategy = new FirstLegalMove();
+    Strategy strategy;
+
+    public Runbot(Strategy strategy) {
+        this.strategy = strategy;
+    }
 
 
     @Override

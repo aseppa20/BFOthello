@@ -1,7 +1,7 @@
 package bfothello;
 
 public class Tile {
-    // A tile on the board
+    // A tile on the board. Used for role selection as well. This might need a change in the future.
     public enum State {
         EMPTY,BLACK,WHITE;
     }
