@@ -40,26 +40,49 @@ class ClientConnection implements Runnable {
         } catch (RuntimeException | IOException e) {
             throw new RuntimeException(e);
         }
+        boolean firstLoop = true;
+        int idle_counter = 0;
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         for(;;) {
             try {
+                Thread.sleep(100);
+
+                // If no action happens in around 10 seconds, send current state to resync.
+                if (idle_counter > 100) {
+                    firstLoop = true;
+                    idle_counter = 0;
+                }
                 if (othello.getTurn() == Tile.State.EMPTY) {
                     output.writeUTF("Game over, bye!");
                     socket.close();
                     System.exit(0);
                 }
 
-                if (!gamestate.equals(othello.getBoard().getBoardStateHash())) {
+                if (!gamestate.equals(othello.getBoard().getBoardStateHash()) || firstLoop) {
                     output.writeUTF((othello.getBoard().getBoardStateHash() + delimiter + othello.getTurn()));
                     gamestate = othello.getBoard().getBoardStateHash();
                     System.out.println("Sent stuff");
+                    firstLoop = false;
                     continue;
                 }
 
+                //System.out.println(role + " Waiting for stuff");
+                if (input.available() < 1) {
+                    idle_counter++;
+                    continue;
+                }
 
-                System.out.println(role + " Waiting for stuff");
                 String line = input.readUTF();
+                // Empty the stream
+                input.skipBytes(input.available());
 
+                idle_counter = 0;
                 if (line.equals("Hello"))
                     output.writeUTF(("Error" + delimiter + "Game Full"));
 
@@ -91,6 +114,8 @@ class ClientConnection implements Runnable {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }
