@@ -2,6 +2,8 @@ package bfothello;
 import java.io.*;
 import java.net.*;
 
+import bfothello.bots.Runbot;
+import bfothello.bots.strategies.*;
 import javafx.application.Application;
 
 

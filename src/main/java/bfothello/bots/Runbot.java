@@ -3,29 +3,14 @@ import java.io.*;
 import java.net.*;
 
 import bfothello.*;
+import bfothello.bots.strategies.FirstLegalMove;
 
 public class Runbot implements Runnable {
     String delimiter = ";";
     String role = "";
     Tile.State rolenum = Tile.State.EMPTY;
+    Strategy strategy = new FirstLegalMove();
 
-    private Tuple<Integer, Integer> findFirstLegalMove(String hash) {
-        Board board = new Board();
-        try {
-            board.constructBoardFromStateHash(hash);
-            CheckForLegalMoves c = new CheckForLegalMoves();
-            for (Integer x = 0; x < 8; x++) {
-                for (Integer y = 0; y < 8; y++) {
-                    if (board.getTile(x, y).getState() != Tile.State.EMPTY || c.doWalks(x, y, rolenum, board).isEmpty())
-                        continue;
-                    return new Tuple<>(x, y);
-                }
-            }
-        } catch (BadHashException e) {
-            System.out.println("Bad hash :( Retrying");
-        }
-        return new Tuple<>(9, 9);
-    }
 
     @Override
     public void run() {
@@ -91,7 +76,7 @@ public class Runbot implements Runnable {
                 }
 
                 if (splitstate[1].equals(rolenum.toString())) {
-                    Tuple<Integer, Integer> newMove = findFirstLegalMove(splitstate[0]);
+                    Tuple<Integer, Integer> newMove = strategy.decideMove(rolenum, splitstate[0]);
                     send.writeUTF(("Move" + delimiter + role + delimiter + newMove.getA().toString() + delimiter + newMove.getB().toString()));
                 } else if (splitstate[1].equals("0")) {
                     game = false;
@@ -104,5 +89,6 @@ public class Runbot implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
