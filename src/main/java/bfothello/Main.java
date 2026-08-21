@@ -2,7 +2,6 @@ package bfothello;
 import java.io.*;
 import java.net.*;
 
-import bfothello.bots.Runbot;
 import bfothello.bots.strategies.*;
 import javafx.application.Application;
 
@@ -11,7 +10,7 @@ public class Main {
     static void newgame() {
         String delimiter = ";";
         Othello othello = new Othello();
-        Thread.ofPlatform().start(new bfothello.bots.Runbot(new FirstLegalMove()){});
+        Thread.ofPlatform().start(new bfothello.bots.Runbot(new NaiveSmallImpact()){});
         Thread.ofPlatform().start(new bfothello.bots.Runbot(new NaiveBigImpact()){});
         Thread.ofPlatform().start(new LobbyServer().run(65500, othello, delimiter));
     }
