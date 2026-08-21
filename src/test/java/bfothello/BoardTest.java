@@ -15,5 +15,13 @@ class BoardTest {
         }
         assertEquals(boardstate, board.getBoardStateHash());
 
+        try {
+            board.constructBoardFromStateHash("10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001");
+            System.out.println(board);
+        } catch (BadHashException e) {
+            fail(e.getMessage());
+        }
+
+
     }
 }

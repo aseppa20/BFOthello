@@ -67,17 +67,20 @@ public class Board {
     public String toString() {
         String hash = this.getBoardStateHash();
         StringBuilder boardString = new StringBuilder();
+        boardString.append("   0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |\n0 |");
         int i = 0;
         int j = 0;
+        int k = 1;
         for (char c : hash.toCharArray()) {
             boardString.append(c);
             i++;
             if (i % 2 == 0) {
-                boardString.append(" ");
+                boardString.append("  ");
             }
             j++;
-            if (j % 16 == 0) {
-                boardString.append("\n");
+            if (j % 16 == 0 && k < 8) {
+                boardString.append("\n" + k + " |");
+                k++;
             }
         }
 
