@@ -26,6 +26,11 @@ public class FirstLegalMove extends Strategy {
     }
 
     @Override
+    public String about() {
+        return "FirstLegalMove\nCalculates the first legal move.";
+    }
+
+    @Override
     public Tuple<Integer, Integer> decideMove(Tile.State yourRole, String statehash) {
         return findFirstLegalMove(statehash, yourRole);
     }

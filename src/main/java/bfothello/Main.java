@@ -12,7 +12,7 @@ public class Main {
         String delimiter = ";";
         Othello othello = new Othello();
         Thread.ofPlatform().start(new bfothello.bots.Runbot(new FirstLegalMove()){});
-        Thread.ofPlatform().start(new bfothello.bots.Runbot(new RandomMove()){});
+        Thread.ofPlatform().start(new bfothello.bots.Runbot(new NaiveBigImpact()){});
         Thread.ofPlatform().start(new LobbyServer().run(65500, othello, delimiter));
     }
 

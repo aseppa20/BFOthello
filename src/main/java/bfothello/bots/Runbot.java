@@ -37,11 +37,11 @@ public class Runbot implements Runnable {
                     role = receive.readUTF();
                     if (role.equals("Black")) {
                         rolenum = Tile.State.BLACK;
-                        System.out.println("Got role Black");
+                        System.out.println("Got role Black. " + strategy.about());
                     }
                     if (role.equals("White")) {
                         rolenum = Tile.State.WHITE;
-                        System.out.println("Got role White");
+                        System.out.println("Got role White"  + strategy.about());
                     }
 
                     if (role.contains("Game full"))

@@ -11,6 +11,11 @@ public class RandomMove extends Strategy {
 
 
     @Override
+    public String about() {
+        return "RandomMove\nCalculates all available moves and selects a random move from the list.";
+    }
+
+    @Override
     public Tuple<Integer, Integer> decideMove(Tile.State yourRole, String statehash) {
         Board b = new Board();
 
