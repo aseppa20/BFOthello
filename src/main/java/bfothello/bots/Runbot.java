@@ -33,7 +33,7 @@ public class Runbot implements Runnable {
 
             while (role.isBlank()) {
                 try {
-                    send.writeUTF("Hello");
+                    send.writeUTF("Hello" + delimiter + strategy.getName());
                     role = receive.readUTF();
                     if (role.equals("Black")) {
                         rolenum = Tile.State.BLACK;

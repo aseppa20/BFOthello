@@ -30,4 +30,9 @@ public class RandomMove extends Strategy {
 
         return aux.selectRandomMoveFromArray(listOfLegalMoves);
     }
+
+    @Override
+    public String getName() {
+        return "RandomMove";
+    }
 }

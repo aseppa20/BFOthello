@@ -1,5 +1,7 @@
 package bfothello;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Othello {
@@ -11,6 +13,11 @@ public class Othello {
     private boolean playerBlack;
     private boolean playerWhite;
 
+    private String filename = "";
+
+    private String blackStrat = "";
+    private String whiteStrat = "";
+
     public Othello() {
     // As for Othello rules, black starts. Sets score to 2 for both, since there are 2 pieces on the board.
         this.board = new Board();
@@ -19,6 +26,17 @@ public class Othello {
         this.scoreBlack = 2;
         playerBlack = false;
         playerWhite = false;
+        filename = "othello_game_" + System.currentTimeMillis() + ".txt";
+    }
+
+
+    private void appendToFile(String text) {
+        try (FileWriter w = new FileWriter(filename, true)) {
+            w.write(text + "\n");
+            w.close();
+        } catch (IOException e) {
+            System.out.println("Error! File write was not possible. Data has been lost.");
+        }
     }
 
     public Board getBoard() {
@@ -83,13 +101,20 @@ public class Othello {
         if (walks.isEmpty()) {
             throw new IllegalMoveException("That is not a legal move.");
         }
+
+        if (scoreBlack + scoreWhite == 4) {
+            appendToFile("Black: " + blackStrat);
+            appendToFile("White: " + whiteStrat);
+            appendToFile(board.getBoardStateHash() + ";Black: " + scoreBlack + " White: " + scoreWhite);
+        }
+
         board.updateTile(x, y, this.turn);
         increment_score();
         for (Tuple<Integer, Integer> walk : walks) {
             board.updateTile(walk.getA(), walk.getB(), this.turn);
             update_score();
         }
-
+        appendToFile(board.getBoardStateHash() + ";Black: " + scoreBlack + " White: " + scoreWhite);
         // Change turn, if a legal move is available
         if (this.turn == Tile.State.BLACK) {
             if (legalMoves.checkIfLegalMoveExists(Tile.State.WHITE, board))
@@ -132,6 +157,14 @@ public class Othello {
 
     public void setPlayerBlack(boolean playerBlack) {
         this.playerBlack = playerBlack;
+    }
+
+    public void setBlackStrat(String blackStrat) {
+        this.blackStrat = blackStrat;
+    }
+
+    public void setWhiteStrat(String whiteStrat) {
+        this.whiteStrat = whiteStrat;
     }
 
 }

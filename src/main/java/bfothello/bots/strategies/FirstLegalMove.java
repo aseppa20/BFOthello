@@ -34,4 +34,9 @@ public class FirstLegalMove extends Strategy {
     public Tuple<Integer, Integer> decideMove(Tile.State yourRole, String statehash) {
         return findFirstLegalMove(statehash, yourRole);
     }
+
+    @Override
+    public String getName() {
+        return "FirstLegalMove";
+    }
 }

@@ -42,4 +42,9 @@ public class NaiveSmallImpact extends Strategy {
 
         return aux.selectRandomMoveFromArray(ListOfMoves);
     }
+
+    @Override
+    public String getName() {
+        return "NaiveSmallImpact";
+    }
 }

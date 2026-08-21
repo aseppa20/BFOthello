@@ -42,4 +42,9 @@ public class NaiveBigImpact extends Strategy {
 
         return aux.selectRandomMoveFromArray(ListOfMoves);
     }
+
+    @Override
+    public String getName() {
+        return "NaiveBigImpact";
+    }
 }

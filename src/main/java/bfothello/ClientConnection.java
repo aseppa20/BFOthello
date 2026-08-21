@@ -29,11 +29,17 @@ class ClientConnection implements Runnable {
         try {
             String line = input.readUTF();
 
-            if (line.equals("Hello")) {
-                if (role == Tile.State.BLACK)
+            if (line.contains("Hello")) {
+                line = line + delimiter + "?";
+                String[] s = line.split(delimiter);
+                if (role == Tile.State.BLACK) {
                     output.writeUTF("Black");
-                else if (role == Tile.State.WHITE)
+                    othello.setBlackStrat(s[1]);
+                }
+                else if (role == Tile.State.WHITE) {
                     output.writeUTF("White");
+                    othello.setWhiteStrat(s[1]);
+                }
             } else {
                 output.writeUTF("Expected Hello");
             }
@@ -67,7 +73,7 @@ class ClientConnection implements Runnable {
                 if (!gamestate.equals(othello.getBoard().getBoardStateHash()) || firstLoop) {
                     output.writeUTF((othello.getBoard().getBoardStateHash() + delimiter + othello.getTurn()));
                     gamestate = othello.getBoard().getBoardStateHash();
-                    System.out.println("Sent stuff");
+                    //System.out.println("Sent stuff");
                     firstLoop = false;
                     continue;
                 }
@@ -83,7 +89,7 @@ class ClientConnection implements Runnable {
                 input.skipBytes(input.available());
 
                 idle_counter = 0;
-                if (line.equals("Hello"))
+                if (line.contains("Hello"))
                     output.writeUTF(("Error" + delimiter + "Game Full"));
 
                 else if (line.equals("State"))
